@@ -417,6 +417,29 @@ void IsolatedLeptonTaggingProcessor::processEvent( LCEvent * evt ) {
     pIsoLepCollection->parameters().setValues( "ISOLepType", isoLepType );
 
   }
+
+  // copy collection parameters to PFOsWithoutIsoLepCollection. 
+  const LCParameters& colPFOpars = colPFO->getParameters(); 
+  LCParameters& colPFOwoIsoLeppars = pPFOsWithoutIsoLepCollection->parameters(); 
+  StringVec intKeys, floatKeys, stringKeys;
+  int nIntParameters = colPFOpars.getIntKeys(intKeys).size() ;
+  for(int i = 0; i < nIntParameters ; i++){
+    IntVec intVec;
+    colPFOpars.getIntVals(intKeys[i],intVec);
+    colPFOwoIsoLeppars.setValues(intKeys[i],intVec);
+  }
+  int nFloatParameters = colPFOpars.getFloatKeys(floatKeys).size();
+  for(int i = 0; i< nFloatParameters ; i++) {
+    FloatVec floatVec;
+    colPFOpars.getFloatVals(floatKeys[i],floatVec) ;
+    colPFOwoIsoLeppars.setValues(floatKeys[i],floatVec);
+  }
+  int nStringParameters = colPFOpars.getStringKeys(stringKeys).size();
+  for(int i = 0; i < nStringParameters; i++) {
+    StringVec stringVec;
+    colPFOpars.getStringVals(stringKeys[i],stringVec);
+    colPFOwoIsoLeppars.setValues(stringKeys[i],stringVec);
+  }
   // add new collections
   evt->addCollection(pPFOsWithoutIsoLepCollection,_colNewPFOs.c_str());
   evt->addCollection(pIsoLepCollection,_colLeptons.c_str());
